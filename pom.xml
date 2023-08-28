@@ -14,7 +14,7 @@
 	<name>todolist</name>
 	<description>Demo project for Spring Boot</description>
 	<properties>
-		<java.version>11</java.version>
+		<java.version>17</java.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -77,11 +77,12 @@
 						</exclude>
 					</excludes>
 				</configuration>
+
 			</plugin>
 			<plugin>
 				<groupId>com.heroku.sdk</groupId>
 				<artifactId>heroku-maven-plugin</artifactId>
-				<version>2.0.8</version>
+				<version>3.0.7</version>
 			</plugin>
 		</plugins>
 
