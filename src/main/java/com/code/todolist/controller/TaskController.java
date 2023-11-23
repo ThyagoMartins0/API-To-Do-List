@@ -15,77 +15,82 @@ import springfox.documentation.annotations.ApiIgnore;
 
 import java.util.List;
 
-@RestController// this is a controller class
-@RequestMapping("/api/v1")// base url
-@AllArgsConstructor// lombok annotation for constructor
-@Slf4j// lombok annotation for logger
+@RestController
+@RequestMapping("/api/v1")
+@AllArgsConstructor
+@Slf4j
 public class TaskController {
+
 
     TaskService taskService;
 
-   //primeiro ENDPOINT
-   @ApiOperation(value = "Create a task")
-           @ApiResponses(value = {
-                   @ApiResponse(code = 201, message = "Task created"),
-                   @ApiResponse(code = 400, message = "Invalid request"),
-                   @ApiResponse(code = 500, message = "Internal server error")
-           })
+    @ApiOperation(value = "Criando uma nova tarefa")
+    @ApiResponses( value ={
+            @ApiResponse(code = 201, message = "Tarefa criada com sucesso"),
+            @ApiResponse(code = 500, message = "Houve um erro ao criar a tarefa, verifique as informações")
 
-    @PostMapping("/tasks")
-    @ResponseStatus(HttpStatus.CREATED)
-    public Task createTask(@RequestBody Task task)// @RequestBody annotation is used to bind the request body with a method parameter.
-    { log.info("Task created[{}]",task);
-        return taskService.createTask(task);
-    }
-    //SEGUNDO ENDPOINT
-    @ApiOperation(value = "Get all tasks")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Task found"),
     })
 
-            @GetMapping("/tasks")
+    @PostMapping("/tasks/create")
+    @ResponseStatus(HttpStatus.CREATED)
+    public Task createTask(@RequestBody Task task) {
+        log.info("Criando uma nova tarefa com as informações [{}]", task);
+        return taskService.createTask(task);
+    }
+
+
+
+    @ApiOperation(value = "Listando todas as tarefas")
+    @ApiResponses( value ={
+            @ApiResponse(code = 200, message = "Tarefas listadas com sucesso"),
+            @ApiResponse(code = 500, message = "Houve um erro ao listar as tarefas")
+
+    })
+    @GetMapping("/tasks")
     @ResponseStatus(HttpStatus.OK)
     public List<Task> getAllTasks() {
+        log.info("Listando todas as tarefas cadastradas");
         return taskService.listAllTasks();
     }
 
-    //TERCEIRO ENDPOINT
-    @ApiOperation(value = "Get a task by id")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Task found"),
-    })
+    @ApiOperation(value = "Buscando uma tarefa pelo id")
+    @ApiResponses( value ={
+            @ApiResponse(code = 200, message = "Tarefa encontrada com sucesso"),
+            @ApiResponse(code = 404, message = "Não foi encontrada nenhuma tarefa com esse id")
 
-            @GetMapping("/tasks/{id}")// {id} is a path variable
-    @ResponseStatus(HttpStatus.OK)// this annotation is used to set the http status code
-    public ResponseEntity<Task> getTaskById(@PathVariable (value = "id") Long id)// @PathVariable annotation is used to bind the path variable with a method parameter.
-     { log.info("Task found[{}]",id);
+    })
+    @GetMapping("/tasks/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<Task> getTaskById(@PathVariable (value = "id") Long id) {
+        log.info("Buscando tarefa com o id [{}]", id);
         return taskService.findTaskById(id);
     }
 
-    //QUARTO ENDPOINT
-    @ApiOperation(value = "Update a task by id")
-        @ApiResponses(value = {
-                @ApiResponse(code = 200, message = "Task updated"),
-        })
+    @ApiOperation(value = "Atualizando uma tarefa")
+    @ApiResponses( value ={
+            @ApiResponse(code = 200, message = "Tarefa atualizada com sucesso"),
+            @ApiResponse(code = 404, message = "Nao foi possivel atualizar a tarefa - tarefa nao encontrada")
 
-
-            @PutMapping  ("/tasks/{id}")
+    })
+    @PutMapping("/tasks/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<Task> UpdateById(@PathVariable (value = "id")Long id, @RequestBody Task task)
-    {log.info("Task updated[{}]",id);
-        return taskService.updateTaskId(task,id);
+    public ResponseEntity<Task> updateTaskById(@PathVariable (value = "id") Long id, @RequestBody Task task) {
+        log.info("Atualizando a tarefa com id [{}] as novas informações são : [{}]",id, task);
+
+        return taskService.updateTaskById(task,id);
     }
 
-    //QUINTO ENDPOINT
-    @ApiOperation(value = "Delete a task by id")
-        @ApiResponses(value = {
-                @ApiResponse(code = 204, message = "Task deleted") })
 
+    @ApiOperation(value = "Excluindo uma tarefa")
+    @ApiResponses( value ={
+            @ApiResponse(code = 204, message = "Tarefa excluida com sucesso"),
+            @ApiResponse(code = 404, message = "Nao foi possivel excluir a tarefa - tarefa nao encontrada")
 
-            @DeleteMapping("/tasks/{id}")
+    })
+    @DeleteMapping("/tasks/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public ResponseEntity<Object> DeleteById(@PathVariable (value = "id") Long id)
-    {log.info("Task deleted[{}]",id);
+    public ResponseEntity<Object> deleteTaskById(@PathVariable (value = "id") Long id) {
+        log.info("Excluindo tarefas com o id [{}]", id);
         return taskService.deleteById(id);
     }
 
